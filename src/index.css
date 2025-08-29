@@ -47,7 +47,7 @@ body {
   padding: 6px;
   flex-shrink: 0;
   fill: cyan;
-  background: #fff;
+  background: #000000;
   border-radius: 50%;
 }
 
@@ -106,7 +106,7 @@ body {
   fill: cyan;
   align-self: flex-end;
   margin-bottom: 2px;
-  background: #fff;
+  background: #000000;
   border-radius: 50%;
 }
 

@@ -2,7 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import ChatbotIcon from "./components/ChatbotIcon";
 import ChatForm from "./components/ChatForm";
 import ChatMessage from "./components/ChatMessage";
+import { v4 as uuidv4 } from "uuid";
+
 const App = () => {
+  // user id for tracking user sessions 
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    // Kiểm tra xem đã có user_id lưu trong localStorage chưa
+    let storedId = localStorage.getItem("user_id");
+    if (!storedId) {
+      storedId = uuidv4(); // Tạo ID mới
+      localStorage.setItem("user_id", storedId);
+    }
+    setUserId(storedId);
+  }, []);
+
   const [chatHistory, setChatHistory] = useState([]);
   const chatBodyRef = useRef()
 
@@ -10,10 +24,14 @@ const App = () => {
 
     // Helper function to update chat history
     const updateHistory = (text, isError = false) => {
-      setChatHistory((prev) => [...prev.filter(msg => msg.text !== "Thinking..."), { role: "model", text, isError }])
+      setChatHistory((prev) => [
+        ...prev.filter(msg => msg.text !== "Thinking..."), 
+        { role: "model", text, isError }]
+      )
     }
 
-    history = history.map(({ role, text }) => ({ role, parts: [{ text }] }))
+    // get latest user message
+    const lastUserMessage = history.filter(msg => msg.role === "user").pop()?.text || ""
 
     const requestOptions = {
       method: "POST",
@@ -21,17 +39,17 @@ const App = () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        contents: history
+        user_id: userId,       
+        message: lastUserMessage
       })
     }
 
     try {
-      // Make api call
-      const response = await fetch(import.meta.env.VITE_API_URL, requestOptions)
+      const response = await fetch("https://chat-about-lvqh.onrender.com/chat", requestOptions);
       const data = await response.json()
-      if (!response.ok) throw new Error(data.error.message || "Something went wrong")
+      if (!response.ok) throw new Error(data.error?.message || "Something went wrong")
 
-      const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim()
+      const apiResponseText = data.answer?.trim() || "No answer received"
       updateHistory(apiResponseText)
     } catch (error) {
       updateHistory(error.message, true)
@@ -50,21 +68,18 @@ const App = () => {
         <div className="chatbot-header">
           <div className="header-info">
             <ChatbotIcon />
-            <h2 className="logo-text">Chatbot</h2>
+            <h2 className="logo-text">Huy Quoc</h2>
           </div>
-          <button className="material-symbols-outlined">
-            arrow_drop_down
-          </button>
         </div>
 
         {/* Body */}
         <div ref={chatBodyRef} className="chat-body">
-          <div className="message bot-message">
+          {/* <div className="message bot-message">
             <ChatbotIcon />
             <p className="message-text">
               Hello! How can I assist you today?
             </p>
-          </div>
+          </div> */}
 
           {/* Render chat history */}
           {chatHistory.map((chat, index) => (
