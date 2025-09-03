@@ -26,7 +26,7 @@ const App = () => {
     // Helper function to update chat history
     const updateHistory = (text, isError = false) => {
       setChatHistory((prev) => [
-        ...prev.filter(msg => msg.text !== "Thinking..."),
+        ...prev.filter(msg => msg.text !== "Đợi một xíu..."),
         { role: "model", text, isError }]
       )
     }

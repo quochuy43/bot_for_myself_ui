@@ -168,7 +168,7 @@ body {
 }
 
 .chat-form button:hover {
-  background: #fbaa5f;
+  background: #f89334;
 }
 
 .chat-form .message-input:valid~button {

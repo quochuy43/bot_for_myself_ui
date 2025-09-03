@@ -15,7 +15,7 @@ const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {
         // Cập nhật UI (user + thinking)
         setChatHistory([
             ...newHistory,
-            { role: "model", text: "Thinking..." },
+            { role: "model", text: "Đợi một xíu..." },
         ]);
 
         // Gọi API với history mới
