@@ -3,6 +3,7 @@ import ChatbotIcon from "./components/ChatbotIcon";
 import ChatForm from "./components/ChatForm";
 import ChatMessage from "./components/ChatMessage";
 import { v4 as uuidv4 } from "uuid";
+import TextType from "./react-bits/TextType";
 
 const App = () => {
   // user id for tracking user sessions 
@@ -25,7 +26,7 @@ const App = () => {
     // Helper function to update chat history
     const updateHistory = (text, isError = false) => {
       setChatHistory((prev) => [
-        ...prev.filter(msg => msg.text !== "Thinking..."), 
+        ...prev.filter(msg => msg.text !== "Thinking..."),
         { role: "model", text, isError }]
       )
     }
@@ -39,7 +40,7 @@ const App = () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        user_id: userId,       
+        user_id: userId,
         message: lastUserMessage
       })
     }
@@ -68,19 +69,19 @@ const App = () => {
         <div className="chatbot-header">
           <div className="header-info">
             <ChatbotIcon />
-            <h2 className="logo-text">Huy Quoc</h2>
+            <TextType
+              className="logo-text"
+              text={["Hi fennnnn", "I'm Cúc Huyyyyy", "Ask me anything you wonder..."]}
+              typingSpeed={75}
+              pauseDuration={1500}
+              showCursor={true}
+              cursorCharacter="|"
+            />
           </div>
         </div>
 
         {/* Body */}
         <div ref={chatBodyRef} className="chat-body">
-          {/* <div className="message bot-message">
-            <ChatbotIcon />
-            <p className="message-text">
-              Hello! How can I assist you today?
-            </p>
-          </div> */}
-
           {/* Render chat history */}
           {chatHistory.map((chat, index) => (
             <ChatMessage key={index} chat={chat} />
@@ -91,7 +92,6 @@ const App = () => {
         <div className="chat-footer">
           <ChatForm chatHistory={chatHistory} setChatHistory={setChatHistory} generateBotResponse={generateBotResponse} />
         </div>
-
       </div>
     </div>
   )
